@@ -8,3 +8,6 @@ As written in the task, I've updated `Details.cshtml` file. However, from my poi
 
 ## Task 3
 Easy fix - glad we caught it early 😅
+
+## Task 4
+Easy fix 💪
