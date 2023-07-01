@@ -57,7 +57,7 @@ namespace Todo.Controllers
             await dbContext.AddAsync(todoList);
             await dbContext.SaveChangesAsync();
 
-            return RedirectToAction("Create", "TodoItem", new {todoList.TodoListId});
+            return RedirectToAction("Create", "TodoItem", new { todoList.TodoListId });
         }
     }
 }

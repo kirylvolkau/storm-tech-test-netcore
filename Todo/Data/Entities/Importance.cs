@@ -1,4 +1,5 @@
-﻿namespace Todo.Data.Entities {
+﻿namespace Todo.Data.Entities
+{
     public enum Importance
     {
         High,

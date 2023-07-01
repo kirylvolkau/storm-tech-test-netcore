@@ -17,7 +17,7 @@ namespace Todo.Views.TodoItem
 
         public static List<SelectListItem> UserSelectListItems(this ApplicationDbContext dbContext)
         {
-            return dbContext.Users.Select(u => new SelectListItem {Text = u.UserName, Value = u.Id}).ToList();
+            return dbContext.Users.Select(u => new SelectListItem { Text = u.UserName, Value = u.Id }).ToList();
         }
     }
 }
