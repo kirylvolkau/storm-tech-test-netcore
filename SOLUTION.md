@@ -11,3 +11,8 @@ Easy fix - glad we caught it early 😅
 
 ## Task 4
 Easy fix 💪
+
+## Task 5
+Solution for this one is not as clean as it could be. 
+Originally, I'm a backend developer - although I don't mind extending my set of capabilities. So, I required to do some research to complete the task (how to call C# function from JS in ASP.NET and how to re-render in a new location).
+Nevertheless, this task solution could be improved - at least without setting the location as a string, since this could be hard to maintain in the future.

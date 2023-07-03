@@ -5,6 +5,12 @@
 
 @{
     ViewData["Title"] = $"List: {Model.Title}";
+
+    bool SwitchHideCompleted()
+    {
+        Model.HideCompleted = !Model.HideCompleted;
+        return Model.HideCompleted;
+    }
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -18,9 +24,21 @@
                 <strong>Add New Item</strong>
             </a>
         </li>
+        
+        <li class="list-group-item">
+            <div>
+                <label for="hidecompleted">Hide completed</label>
+                <input type="checkbox" value="Hide completed" id="hidecompleted" checked="@Model.HideCompleted"/>
+            </div>
+        </li>
 
         @foreach (var item in Model.Items.OrderBy(i => i.Importance))
         {
+            if (item.IsDone && Model.HideCompleted)
+            {
+                continue;
+            }
+
             string contextualClass;
             switch (item.Importance)
             {
@@ -67,3 +85,15 @@
         }
     </ul>
 </div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+         document.addEventListener("DOMContentLoaded", function () {
+            let button = document.getElementById('hidecompleted');
+            button.addEventListener('click', function () {
+                location.assign("/TodoList/Detail?todoListId=@Model.TodoListId&hideCompleted=@SwitchHideCompleted()");
+            });
+        });
+    </script>
+}
