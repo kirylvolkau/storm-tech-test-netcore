@@ -9,17 +9,20 @@ namespace Todo.Models.TodoLists
         public string Title { get; }
         public ICollection<TodoItemSummaryViewmodel> Items { get; }
         public bool HideCompleted { get; set; }
+        public TodoListSortingOption SortBy { get; set; }
 
         public TodoListDetailViewmodel(
             int todoListId,
             string title,
             ICollection<TodoItemSummaryViewmodel> items,
-            bool hideCompleted)
+            bool hideCompleted,
+            TodoListSortingOption sortBy)
         {
             Items = items;
             TodoListId = todoListId;
             Title = title;
             HideCompleted = hideCompleted;
+            SortBy = sortBy;
         }
     }
 }

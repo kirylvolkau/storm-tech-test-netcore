@@ -1,5 +1,5 @@
-﻿@using Todo.Controllers
-@using Todo.Data.Entities
+﻿@using Todo.Data.Entities
+@using Todo.Models.TodoLists
 @using Todo.Services
 @model Todo.Models.TodoLists.TodoListDetailViewmodel
 
@@ -8,14 +8,13 @@
 
     bool SwitchHideCompleted()
     {
-        Model.HideCompleted = !Model.HideCompleted;
-        return Model.HideCompleted;
+        return !Model.HideCompleted;
     }
 }
 
 <h2>@ViewData["Title"]</h2>
 
-<div class="col-md-6">
+<div class="col-md-10">
 
     <ul class="list-group">
 
@@ -27,61 +26,105 @@
         
         <li class="list-group-item">
             <div>
-                <label for="hidecompleted">Hide completed</label>
+                <label for="sorting">Order by:</label>
+                <select name="sorting" id="sorting">
+                    @{
+                        foreach (var option in Enum.GetValues<TodoListSortingOption>())
+                        {
+                            if (option == Model.SortBy)
+                            {
+                                <option value="@option" selected>@option</option>
+                            }
+                            else
+                            {
+                                <option value="@option">@option</option>
+                            }
+                        }
+                    }
+                </select>
+            </div>
+        </li>
+        
+        <li class="list-group-item">
+            <div>
                 <input type="checkbox" value="Hide completed" id="hidecompleted" checked="@Model.HideCompleted"/>
+                <label for="hidecompleted">Hide completed</label>
             </div>
         </li>
 
-        @foreach (var item in Model.Items.OrderBy(i => i.Importance))
-        {
-            if (item.IsDone && Model.HideCompleted)
+        @{
+            var items = Model.Items.AsEnumerable();
+            switch (Model.SortBy)
             {
-                continue;
-            }
-
-            string contextualClass;
-            switch (item.Importance)
-            {
-                case Importance.High:
-                    contextualClass = "list-group-item-danger";
+                case TodoListSortingOption.Rank:
+                {
+                    items = items.OrderByDescending(i => i.Rank);
                     break;
-                case Importance.Low:
-                    contextualClass = "list-group-item-info";
-                    break;
+                }
+                case TodoListSortingOption.Importance:
                 default:
-                    contextualClass = "";
+                {
+                    items = items.OrderBy(i => i.Importance);
                     break;
+                }
             }
+            
+            foreach (var item in items)
+            {
+                if (item.IsDone && Model.HideCompleted)
+                {
+                    continue;
+                }
 
-            <li class="list-group-item @contextualClass">
+                string contextualClass;
+                switch (item.Importance)
+                {
+                    case Importance.High:
+                        contextualClass = "list-group-item-danger";
+                        break;
+                    case Importance.Low:
+                        contextualClass = "list-group-item-info";
+                        break;
+                    default:
+                        contextualClass = "";
+                        break;
+                }
                 
-                <div class="row">
+                <li class="list-group-item @contextualClass">
+                    
+                    <div class="row">
 
-                <div class="col-md-8">
-                    <a asp-action="Edit" asp-controller="TodoItem" asp-route-todoItemId="@item.TodoItemId">
+                        <div class="col-md-8">
+                            <a asp-action="Edit" asp-controller="TodoItem" asp-route-todoItemId="@item.TodoItemId">
 
-                        @if (item.IsDone)
-                        {
-                            <s>@item.Title</s>
-                        }
-                        else
-                        {
-                            <text>@item.Title</text>
-                        }
-                    </a>
-                </div>
+                                @if (item.IsDone)
+                                {
+                                    <s>@item.Title</s>
+                                }
+                                else
+                                {
+                                    <text>@item.Title</text>
+                                }
+                            </a>
+                        </div>
 
-                <div class="col-md-4 text-right">
-                    <small>
-                        @item.ResponsibleParty.UserName
+                        <div col-md-4>
+                            <small>Rank: @item.Rank</small>
+                        </div>
 
-                        <img src="https://www.gravatar.com/avatar/@Gravatar.GetHash(item.ResponsibleParty.Email)?s=30"/>
+                        <div class="col-md-4 text-right">
+                            <small>
+                                @item.ResponsibleParty.UserName
 
-                    </small>
-                </div>
-                </div>
+                                <img src="https://www.gravatar.com/avatar/@Gravatar.GetHash(item.ResponsibleParty.Email)?s=30" alt="gravatar"/>
 
-            </li>
+                            </small>
+                        </div>
+
+                    </div>
+
+                </li>
+            }
         }
     </ul>
 </div>
@@ -89,10 +132,15 @@
 @section Scripts
 {
     <script type="text/javascript">
-         document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
             let button = document.getElementById('hidecompleted');
             button.addEventListener('click', function () {
-                location.assign("/TodoList/Detail?todoListId=@Model.TodoListId&hideCompleted=@SwitchHideCompleted()");
+                location.assign("/TodoList/Detail?todoListId=@Model.TodoListId&hideCompleted=@SwitchHideCompleted()&sortBy=@Model.SortBy");
+            });
+            
+            let dropdown = document.getElementById("sorting");
+            dropdown.addEventListener('change', function () {
+                location.assign(`/TodoList/Detail?todoListId=@Model.TodoListId&hideCompleted=@Model.HideCompleted&sortBy=${dropdown.value}`);
             });
         });
     </script>

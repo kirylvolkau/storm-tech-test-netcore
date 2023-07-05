@@ -19,3 +19,6 @@ Nevertheless, this task solution could be improved - at least without setting th
 
 ## Task 6
 Nice extension to make! I would also propose limiting users to edit only lists they have ownership of - now they are able to also edit lists they are not owners of.
+
+## Task 7
+For me this task was also mostly about the frontend - unfortunately, I had some time figuring out how to select elements and pass them on in the location string.
