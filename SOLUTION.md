@@ -27,14 +27,14 @@ For me this task was also mostly about the frontend - unfortunately, I had some 
 Unfortunately, I didn't manage to complete tasks 8-10 since I am in a trip currently and designating time to job-search-related tasks could be difficult. So, in order not to prolong the wait I've decided to at least describe how I would approach the tasks.
 
 ### Task 8
-This task is about using the API, provided by the Gravatar (https://en.gravatar.com/site/implement/).
-To address this in a real-life project I would search for a supported NuGet or just implement ourselves - sometimes it is easier to write a couple of lines of code and not drag any external dependencies into a project.
-However, there is also a second part to this task - implementing it in the resilient way. Here, I would use `Polly` library and implement several simple retries (short enough, so the user wouldn't suffer from the long-loading page).
-If we really want to show the name of the user - it could be made via ajax calls from the frontend and updating the user info once we get the result (there should be some back-off, maybe even exponential, when retrying).
-In the worst case we could just not display the name.
+The approach I chose for this task was as follows:
 
+1. Don't use any NuGet packages for the gravatar API - just generate models from a sample json response (comment left in the code)
+2. Try loading gravatar name for every single user when it is possible (and it is not set in the cache already - timespan is chosen to be one day since there are a lot of services which tell you that "after you update your data it will be actualised in one day")
+3. Set in cache once loaded (15 seconds timeout is set in the HTTP client so we don't wait to long - could be less. However, no retries - retries on our side would require creating a whole new API endpoint and sending AJAX calls from the frontend)
+4. For displaying name in lists (edit and create to do item) - the solution was, due to the limit of time, load names for users who already have the name stored in the cache. Obviously, it is not an ideal solution - however, refactoring the usage of `dbContext` would require more time (separation of concerns seems to be a little bit broken in the project)
 
-Displaying it in near the e-mail is fairly easy - we need to pass it in the viewodel alongside `ResponsiblePartyId` and, potentially, cache the information on our side, to prevent performing a lot of request to Gravatar API.
+Displaying the names only for users, who have already logged in after the change was introduced is, obviously, a limitation - however, due to the lack of time on the project and demanding stakeholders (joking) it was decided to made a nice facade and then fix the problem after the release :)
 
 ### Task 9
 Task 9 is mostly about frontend, the only thing we need to do on the backend is to extend a `TodoItemController`. Nevertheless, we would need to also add authorization possibilities and anti-forgery (as this is used on other methods in the app). And to perform ajax call to the backend, obviously - this way, we can update the UI without reloading the page.

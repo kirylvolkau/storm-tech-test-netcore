@@ -11,7 +11,7 @@ namespace Todo.Data.Entities
         public IdentityUser ResponsibleParty { get; set; }
         public bool IsDone { get; set; }
         public Importance Importance { get; set; }
-        
+
         [Range(0, int.MaxValue)]
         public int Rank { get; set; }
 

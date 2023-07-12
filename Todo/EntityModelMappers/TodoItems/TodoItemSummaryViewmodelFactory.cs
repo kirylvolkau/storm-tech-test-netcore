@@ -10,7 +10,7 @@ namespace Todo.EntityModelMappers.TodoItems
             return new TodoItemSummaryViewmodel(
                 ti.TodoItemId,
                 ti.Title,
-                ti.IsDone, 
+                ti.IsDone,
                 UserSummaryViewmodelFactory.Create(ti.ResponsibleParty),
                 ti.Importance,
                 ti.Rank);

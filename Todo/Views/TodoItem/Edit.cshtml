@@ -1,8 +1,11 @@
 ﻿@using Todo.Data
 @using Todo.Data.Entities
 @using Todo.Views.TodoItem
+@using Todo.Cache
+@using Todo.Services
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model Todo.Models.TodoItems.TodoItemEditFields
-
+@inject GravatarCache GravatarCache
 
 @{
     ViewData["Title"] = $"Edit Item in {Model.TodoListTitle}";
@@ -57,7 +60,15 @@
                 <label asp-for="ResponsiblePartyId">Responsible party</label>
                 @Html.DropDownListFor(
                     m => m.ResponsiblePartyId,
-                    dbContext.UserSelectListItems(),
+                    dbContext
+                        .UserSelectListItems()
+                        .Select(i => new SelectListItem
+                        {
+                            Value = i.Value,
+                            Text = GravatarCache.GetName(GravatarService.GetHash(i.Text)) is not null 
+                                ? $"{GravatarCache.GetName(GravatarService.GetHash(i.Text))} - {i.Text}"
+                                : i.Text
+                        }),
                     new {@class="form-control"}
                     )
                 <span asp-validation-for="ResponsiblePartyId" class="text-danger"></span>

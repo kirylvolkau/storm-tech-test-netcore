@@ -12,7 +12,7 @@ namespace Todo.Models.TodoItems
         public bool IsDone { get; set; }
         public string ResponsiblePartyId { get; set; }
         public Importance Importance { get; set; }
-        
+
         [Range(0, int.MaxValue)]
         public int Rank { get; set; }
 

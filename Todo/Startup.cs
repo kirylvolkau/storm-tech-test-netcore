@@ -7,7 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Todo.Cache;
 using Todo.Data;
+using Todo.Services;
 
 namespace Todo
 {
@@ -38,6 +40,11 @@ namespace Todo
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddControllers();
+
+            services.AddHttpClient();
+
+            services.AddTransient<GravatarService>();
+            services.AddSingleton<GravatarCache>();
 
             services.AddAuthorization(options =>
             {
